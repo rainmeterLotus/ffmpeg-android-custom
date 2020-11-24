@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 case $ANDROID_ABI in
+  armeabi-v7a)
+    EXTRA_BUILD_CONFIGURATION_FLAGS=--enable-thumb
+    ;;
   x86)
     # Disabling assembler optimizations, because they have text relocations
     EXTRA_BUILD_CONFIGURATION_FLAGS=--disable-asm
@@ -25,6 +28,9 @@ done
 DEP_CFLAGS="-I${BUILD_DIR_EXTERNAL}/${ANDROID_ABI}/include"
 DEP_LD_FLAGS="-L${BUILD_DIR_EXTERNAL}/${ANDROID_ABI}/lib $FFMPEG_EXTRA_LD_FLAGS"
 
+# Everything that goes below ${EXTRA_BUILD_CONFIGURATION_FLAGS} is my project-specific.
+# You are free to enable/disable whatever you actually need.
+
 ./configure \
   --prefix=${BUILD_DIR_FFMPEG}/${ANDROID_ABI} \
   --enable-cross-compile \
@@ -45,6 +51,19 @@ DEP_LD_FLAGS="-L${BUILD_DIR_EXTERNAL}/${ANDROID_ABI}/lib $FFMPEG_EXTRA_LD_FLAGS"
   --disable-static \
   --pkg-config=${PKG_CONFIG_EXECUTABLE} \
   ${EXTRA_BUILD_CONFIGURATION_FLAGS} \
+  --disable-runtime-cpudetect \
+  --disable-programs \
+  --disable-muxers \
+  --disable-encoders \
+  --disable-avdevice \
+  --disable-postproc \
+  --disable-swresample \
+  --disable-avfilter \
+  --disable-doc \
+  --disable-debug \
+  --disable-pthreads \
+  --disable-network \
+  --disable-bsfs \
   $ADDITIONAL_COMPONENTS || exit 1
 
 ${MAKE_EXECUTABLE} clean
