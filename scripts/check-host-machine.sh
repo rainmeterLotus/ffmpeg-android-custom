@@ -6,6 +6,8 @@ function checkVariablePresence() {
     echo "The ${VARIABLE_NAME} environment variable isn't defined"
     echo $2
     exit 1
+  else
+    echo "The ${VARIABLE_NAME} environment variable is defined!--go go go--"
   fi
 }
 

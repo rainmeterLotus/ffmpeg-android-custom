@@ -7,7 +7,7 @@
 # Can be overridden with specific arguments.
 # See the end of this file for more description.
 ABIS_TO_BUILD=()
-API_LEVEL=16
+API_LEVEL=21
 SOURCE_TYPE=TAR
 SOURCE_VALUE=4.3.1
 BINUTILS=gnu
@@ -143,16 +143,22 @@ if [ ${#ABIS_TO_BUILD[@]} -eq 0 ]; then
 fi
 # The FFmpeg will be build for ABIs in this list
 export FFMPEG_ABIS_TO_BUILD=${ABIS_TO_BUILD[@]}
+echo "----FFMPEG_ABIS_TO_BUILD:${FFMPEG_ABIS_TO_BUILD[@]}"
 
 # Saving the information FFmpeg's source code downloading
 export FFMPEG_SOURCE_TYPE=$SOURCE_TYPE
 export FFMPEG_SOURCE_VALUE=$SOURCE_VALUE
+echo "----FFMPEG_SOURCE_TYPE:${FFMPEG_SOURCE_TYPE}"
+echo "----FFMPEG_SOURCE_VALUE:${FFMPEG_SOURCE_VALUE}"
 
 # A list of external libraries to build into the FFmpeg
 # Elements from this list are used for strings substitution
 export FFMPEG_EXTERNAL_LIBRARIES=${EXTERNAL_LIBRARIES[@]}
+echo "----FFMPEG_EXTERNAL_LIBRARIES:${FFMPEG_EXTERNAL_LIBRARIES[@]}"
 
 # Desired Android API level to use during compilation
 # Will be replaced with 21 for 64bit ABIs if the value is less than 21
 export DESIRED_ANDROID_API_LEVEL=${API_LEVEL}
 export DESIRED_BINUTILS=${BINUTILS}
+echo "----DESIRED_ANDROID_API_LEVEL:${DESIRED_ANDROID_API_LEVEL}"
+echo "----DESIRED_BINUTILS:${DESIRED_BINUTILS}"

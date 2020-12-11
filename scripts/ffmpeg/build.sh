@@ -30,6 +30,13 @@ DEP_LD_FLAGS="-L${BUILD_DIR_EXTERNAL}/${ANDROID_ABI}/lib $FFMPEG_EXTRA_LD_FLAGS"
 
 # Everything that goes below ${EXTRA_BUILD_CONFIGURATION_FLAGS} is my project-specific.
 # You are free to enable/disable whatever you actually need.
+echo "--SYSROOT_PATH:$SYSROOT_PATH"
+echo "--EXTRA_BUILD_CONFIGURATION_FLAGS:$EXTRA_BUILD_CONFIGURATION_FLAGS"
+echo "--ADDITIONAL_COMPONENTS:$ADDITIONAL_COMPONENTS"
+echo "--DEP_CFLAGS:$DEP_CFLAGS"
+echo "--DEP_LD_FLAGS:$DEP_LD_FLAGS"
+echo "--FFMPEG_EXTRA_LD_FLAGS:$FFMPEG_EXTRA_LD_FLAGS"
+echo "--TARGET_TRIPLE_MACHINE_BINUTILS:$TARGET_TRIPLE_MACHINE_BINUTILS"
 
 ./configure \
   --prefix=${BUILD_DIR_FFMPEG}/${ANDROID_ABI} \
@@ -53,17 +60,18 @@ DEP_LD_FLAGS="-L${BUILD_DIR_EXTERNAL}/${ANDROID_ABI}/lib $FFMPEG_EXTRA_LD_FLAGS"
   ${EXTRA_BUILD_CONFIGURATION_FLAGS} \
   --disable-runtime-cpudetect \
   --disable-programs \
-  --disable-muxers \
-  --disable-encoders \
   --disable-avdevice \
   --disable-postproc \
-  --disable-swresample \
-  --disable-avfilter \
   --disable-doc \
   --disable-debug \
-  --disable-pthreads \
   --disable-network \
   --disable-bsfs \
+  --enable-pthreads \
+  --enable-asm \
+  --disable-neon \
+  --enable-jni \
+  --enable-mediacodec \
+  --enable-decoder=h264_mediacodec \
   $ADDITIONAL_COMPONENTS || exit 1
 
 ${MAKE_EXECUTABLE} clean
