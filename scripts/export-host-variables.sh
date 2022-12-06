@@ -3,6 +3,11 @@
 # Defining a toolchain directory's name according to the current OS.
 # Assume that proper version of NDK is installed
 # and is referenced by ANDROID_NDK_HOME environment variable
+# 依据编译系统确定编译工具链的目录名字
+#macOS	darwin-x86_64
+#Linux	linux-x86_64
+#32 位 Windows	windows
+#64 位 Windows	windows-x86_64
 case "$OSTYPE" in
   darwin*)  HOST_TAG="darwin-x86_64" ;;
   linux*)   HOST_TAG="linux-x86_64" ;;
@@ -14,6 +19,8 @@ case "$OSTYPE" in
   ;;
 esac
 
+#检查当前系统输出cup的个数，这就是你们经常网上看到的那种编译 make -j8,开启编译cpu线程数
+#可以看下scripts/ffmpeg/build.sh最后用到了HOST_NPROC变量
 if [[ $OSTYPE == "darwin"* ]]; then
   HOST_NPROC=$(sysctl -n hw.physicalcpu)
 else

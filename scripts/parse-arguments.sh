@@ -7,7 +7,7 @@
 # Can be overridden with specific arguments.
 # See the end of this file for more description.
 ABIS_TO_BUILD=()
-API_LEVEL=21
+API_LEVEL=24
 SOURCE_TYPE=TAR
 SOURCE_VALUE=4.3.1
 BINUTILS=gnu

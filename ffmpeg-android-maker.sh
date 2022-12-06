@@ -3,6 +3,7 @@
 # Defining essential directories
 
 # The root of the project
+#下面的echo是日志输出
 export BASE_DIR="$( cd "$( dirname "$0" )" && pwd )"
 echo "----BASE_DIR:$BASE_DIR"
 # Directory that contains source code for FFmpeg and its dependencies

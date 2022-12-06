@@ -81,7 +81,7 @@ export TARGET=${TARGET_TRIPLE_MACHINE_CC}-linux-${TARGET_TRIPLE_OS}${ANDROID_PLA
 export FAM_CC=${TOOLCHAIN_PATH}/bin/${TARGET}-clang
 export FAM_CXX=${FAM_CC}++
 export FAM_LD=${FAM_CC}
-
+echo "----FAM_CC--$FAM_CC---"
 # TODO consider abondaning this strategy of defining the name of the clang wrapper
 # in favour of just passing -mstackrealign and -fno-addrsig depending on
 # ANDROID_ABI, ANDROID_PLATFORM and NDK's version

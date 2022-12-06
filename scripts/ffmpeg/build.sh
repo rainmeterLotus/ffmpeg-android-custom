@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 
+EXTRA_BUILD_CONFIGURATION_FLAGS=
+FF_EXTRA_CFLAGS=
+
 case $ANDROID_ABI in
   armeabi-v7a)
-    EXTRA_BUILD_CONFIGURATION_FLAGS=--enable-thumb
+    EXTRA_BUILD_CONFIGURATION_FLAGS="$EXTRA_BUILD_CONFIGURATION_FLAGS --enable-thumb"
+    EXTRA_BUILD_CONFIGURATION_FLAGS="$EXTRA_BUILD_CONFIGURATION_FLAGS --enable-neon"
+    FF_EXTRA_CFLAGS="$FF_EXTRA_CFLAGS-march=armv7-a -mcpu=cortex-a8 -mfpu=vfpv3-d16 -mfloat-abi=softfp -mthumb"
+    ;;
+  arm64-v8a)
+    EXTRA_BUILD_CONFIGURATION_FLAGS=
     ;;
   x86)
     # Disabling assembler optimizations, because they have text relocations
@@ -25,7 +33,7 @@ do
 done
 
 # Referencing dependencies without pkgconfig
-DEP_CFLAGS="-I${BUILD_DIR_EXTERNAL}/${ANDROID_ABI}/include"
+DEP_CFLAGS="-I${BUILD_DIR_EXTERNAL}/${ANDROID_ABI}/include $FF_EXTRA_CFLAGS"
 DEP_LD_FLAGS="-L${BUILD_DIR_EXTERNAL}/${ANDROID_ABI}/lib $FFMPEG_EXTRA_LD_FLAGS"
 
 # Everything that goes below ${EXTRA_BUILD_CONFIGURATION_FLAGS} is my project-specific.
@@ -37,6 +45,46 @@ echo "--DEP_CFLAGS:$DEP_CFLAGS"
 echo "--DEP_LD_FLAGS:$DEP_LD_FLAGS"
 echo "--FFMPEG_EXTRA_LD_FLAGS:$FFMPEG_EXTRA_LD_FLAGS"
 echo "--TARGET_TRIPLE_MACHINE_BINUTILS:$TARGET_TRIPLE_MACHINE_BINUTILS"
+
+DISABLE_C=
+
+# Configuration options:
+DISABLE_C="$DISABLE_C --disable-gray"
+DISABLE_C="$DISABLE_C --disable-swscale-alpha"
+
+# Program options:
+DISABLE_C="$DISABLE_C --disable-ffplay"
+#DISABLE_C="$DISABLE_C --disable-ffserver"
+DISABLE_C="$DISABLE_C --disable-ffmpeg"
+DISABLE_C="$DISABLE_C --disable-ffprobe"
+DISABLE_C="$DISABLE_C --disable-programs"
+DISABLE_C="$DISABLE_C --disable-linux-perf"
+
+# Documentation options:
+DISABLE_C="$DISABLE_C --disable-doc"
+DISABLE_C="$DISABLE_C --disable-htmlpages"
+DISABLE_C="$DISABLE_C --disable-manpages"
+DISABLE_C="$DISABLE_C --disable-podpages"
+DISABLE_C="$DISABLE_C --disable-txtpages"
+
+# Hardware accelerators:
+DISABLE_C="$DISABLE_C --disable-dxva2"
+DISABLE_C="$DISABLE_C --disable-vaapi"
+# DISABLE_C="$DISABLE_C --disable-vda"
+DISABLE_C="$DISABLE_C --disable-vdpau"
+
+# Individual component options:
+# DISABLE_C="$DISABLE_C --disable-encoders"
+DISABLE_C="$DISABLE_C --enable-hwaccels"
+# DISABLE_C="$DISABLE_C --disable-muxers"
+# DISABLE_C="$DISABLE_C --disable-devices"
+
+# Component options:
+DISABLE_C="$DISABLE_C --disable-avdevice"
+DISABLE_C="$DISABLE_C --disable-postproc"
+
+# External library support:
+DISABLE_C="$DISABLE_C --disable-iconv"
 
 ./configure \
   --prefix=${BUILD_DIR_FFMPEG}/${ANDROID_ABI} \
@@ -59,19 +107,19 @@ echo "--TARGET_TRIPLE_MACHINE_BINUTILS:$TARGET_TRIPLE_MACHINE_BINUTILS"
   --pkg-config=${PKG_CONFIG_EXECUTABLE} \
   ${EXTRA_BUILD_CONFIGURATION_FLAGS} \
   --disable-runtime-cpudetect \
-  --disable-programs \
-  --disable-avdevice \
-  --disable-postproc \
-  --disable-doc \
   --disable-debug \
-  --disable-network \
+  --enable-network \
   --disable-bsfs \
   --enable-pthreads \
   --enable-asm \
-  --disable-neon \
   --enable-jni \
   --enable-mediacodec \
   --enable-decoder=h264_mediacodec \
+  --enable-decoder=vp8_mediacodec \
+  --enable-decoder=vp9_mediacodec \
+  --enable-decoder=mpeg4_mediacodec \
+  --enable-decoder=hevc_mediacodec \
+  $DISABLE_C \
   $ADDITIONAL_COMPONENTS || exit 1
 
 ${MAKE_EXECUTABLE} clean
